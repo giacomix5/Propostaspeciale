@@ -37,6 +37,7 @@
     .buttons {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 20px;
       margin-top: 20px;
       min-height: 50px;
@@ -61,10 +62,10 @@
     #btn-no {
       background-color: #dc3545;
       color: white;
-      position: absolute;
+      z-index: 10;
     }
     .hidden {
-      display: none;
+      display: none !important;
     }
   </style>
   <!-- Libreria per i coriandoli -->
@@ -86,18 +87,25 @@
     const question = document.getElementById('question');
 
     // Funzione per far scappare il pulsante "No"
-    function moveButton() {
-      const padding = 50;
-      const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - padding);
-      const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - padding);
+    function moveButton(e) {
+      if (e && e.type === 'touchstart') {
+        e.preventDefault(); // Evita il click accidentale su smartphone
+      }
+      
+      const padding = 20;
+      const maxX = window.innerWidth - btnNo.offsetWidth - padding;
+      const maxY = window.innerHeight - btnNo.offsetHeight - padding;
+      
+      const x = Math.max(padding, Math.random() * maxX);
+      const y = Math.max(padding, Math.random() * maxY);
       
       btnNo.style.position = 'fixed';
-      btnNo.style.left = `${Math.max(padding, x)}px`;
-      btnNo.style.top = `${Math.max(padding, y)}px`;
+      btnNo.style.left = `${x}px`;
+      btnNo.style.top = `${y}px`;
     }
 
     btnNo.addEventListener('mouseover', moveButton);
-    btnNo.addEventListener('touchstart', moveButton); // Per smartphone
+    btnNo.addEventListener('touchstart', moveButton, { passive: false }); // Per smartphone
 
     // Cosa succede quando clicca "Sì"
     btnYes.addEventListener('click', () => {
